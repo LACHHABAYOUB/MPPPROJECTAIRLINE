@@ -56,7 +56,7 @@ public class userInterfaceAGENT extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		stage.setTitle("Reservation System For ADMIN");
+		stage.setTitle("Reservation System For AGENT");
 		stage.getIcons().add(new Image("/ui/icon.png"));
 
 		
