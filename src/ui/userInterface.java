@@ -1,10 +1,7 @@
 package ui;
-
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.swing.ButtonGroup;
 
 import object.Airline;
 import object.Airport;
@@ -22,14 +19,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -61,6 +57,7 @@ public class userInterface extends Application {
 	public void start(Stage stage) {
 
 		stage.setTitle("Address Form");
+		stage.getIcons().add(new Image("/ui/icon.png"));
 /////////////////////////////////////
 		Button btShowAirPort = new Button("View List of Airports");
 		Button btViewlistairlines = new Button("View list of airlines by Airports");
@@ -82,48 +79,48 @@ public class userInterface extends Application {
 		flowpane2.setAlignment(Pos.CENTER);
 ////////////////////////////////////////
 		GridPane gridP = new GridPane();
-		gridP.setPadding(new Insets(5, 5, 5, 5));
+		gridP.setPadding(new Insets(7, 7, 7, 7));
 		gridP.add(agent, 0, 0);
 		gridP.add(passenger, 0, 1);
 		gridP.add(makeReservation, 0, 2);
 
 /////////////////////////////////////////
 		GridPane grid = new GridPane();
-		grid.setPadding(new Insets(5, 5, 5, 5));
+		grid.setPadding(new Insets(7, 7, 7, 7));
 		grid.add(new Text("ID"), 0, 0);
 		grid.add(id, 0, 1);
 /////////////////////////////////////////
 		GridPane grid0 = new GridPane();
-		grid0.setPadding(new Insets(5, 5, 5, 5));
+		grid0.setPadding(new Insets(7, 7, 7,7));
 		grid0.add(new Text("ID Passenger"), 0, 0);
 		grid0.add(idPass, 0, 1);
 /////////////////////////////////////////
 		GridPane grid1 = new GridPane();
-		grid1.setPadding(new Insets(5, 5, 5, 5));
+		grid1.setPadding(new Insets(7, 7, 7, 7));
 		grid1.add(new Text("Departure"), 0, 0);
 		grid1.add(deparAiro, 0, 1);
 ////////////////////////////////////////
 		GridPane grid2 = new GridPane();
-		grid2.setPadding(new Insets(5, 5, 5, 5));
+		grid2.setPadding(new Insets(7, 7, 7, 7));
 		grid2.add(new Text("Arrival"), 0, 0);
 		grid2.add(arrivAiro, 0, 1);
 ////////////////////////////////////////
 		GridPane grid3 = new GridPane();
-		grid3.setPadding(new Insets(5, 5, 5, 5));
+		grid3.setPadding(new Insets(7, 7, 7, 7));
 		grid3.add(new Text("Date (YYYY-MM-DD)"), 0, 0);
 		grid3.add(date, 0, 1);
 ////////////////////////////////////////
 		GridPane grid4 = new GridPane();
-		grid4.setPadding(new Insets(5, 5, 5, 5));
+		grid4.setPadding(new Insets(7, 7, 7, 7));
 		grid4.add(new Text("reservation Code"), 0, 0);
 		grid4.add(reservationCode, 0, 1);
 		GridPane gridC = new GridPane();
-		gridC.setPadding(new Insets(5, 5, 5, 5));
+		gridC.setPadding(new Insets(7, 7, 7, 7));
 		gridC.add(new Text("City"), 0, 0);
 		gridC.add(city, 0, 1);
 ////////////////////////////////////////
 		/*
-		 * GridPane grid5 = new GridPane(); grid5.setPadding(new Insets(5, 5, 5, 5));
+		 * GridPane grid5 = new GridPane(); grid5.setPadding(new Insets(7, 7, 7, 7));
 		 * grid5.add(new Text("Flight Number"), 0, 0); grid5.add(flightNumber,0,1 );
 		 */
 ////////////////////////////////////////
@@ -154,7 +151,7 @@ public class userInterface extends Application {
 //////////////////////////////////////////////////
 		bPane.setTop(flowpane1);
 		bPane.setBottom(flowpane2);
-		flowpane2.setPadding(new Insets(5, 5, 5, 5));
+		flowpane2.setPadding(new Insets(7, 7, 7, 7));
 //////////////////////////////////////////////////
 		makeReservation.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -373,8 +370,8 @@ public class userInterface extends Application {
 		});
 
 //////////////////////////////////////////////////
-		stage.setScene(new Scene(bPane, 850, 200));
-		stage.show();
+		stage.setScene(new Scene(bPane, 900, 300));
+		bPane.getStylesheets().add(getClass().getResource("Login.css").toExternalForm());stage.show();
 
 	}
 
