@@ -55,7 +55,7 @@ public class userInterfacePASSENGER extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		stage.setTitle("Reservation System For ADMIN");
+		stage.setTitle("Reservation System For PASSENGER");
 		stage.getIcons().add(new Image("/ui/icon.png"));
 
 		
