@@ -4,7 +4,7 @@ ARS
 
 Air Reservation Online 
 
-Small App for help manage Air Reervation 
+Small App to help manage Air Reservation
 
 App Build Java and UI via JavaFX 
 
