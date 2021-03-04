@@ -28,6 +28,10 @@ https://www.eclipse.org/downloads
 - Import Project 
 - Import some addtional library there located on :
     /src/Additional/Library To Add
+- Open Xampp and Start Mysql 
+    Create Database Name airline_reservation_db 
+    Go to privilege and add user name systemuser , password rood and give him all Privileges .
+- Import Sql file from additional/DB.
     
 3.2 For Run the project should go to UI/login.java and go to Run Configuration add this on argument
 
