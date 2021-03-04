@@ -1,6 +1,6 @@
 package object;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 public class Flight {
 
@@ -8,14 +8,14 @@ public class Flight {
 	private String number;
 	private int capacity;
 	
-	private LocalTime departureTime;
-	private LocalTime arrivalTime;
+	private LocalDate departureTime;
+	private LocalDate arrivalTime;
 	
 	private Airport departureAirport;
 	private Airport arrivalAirport;
 
 	public Flight(String id, String number, int capacity, 
-			LocalTime departureTime, LocalTime arrivalTime,
+			LocalDate departureTime, LocalDate arrivalTime,
 			Airport departureAirport, 
 			Airport arrivalAirport
 			) {
@@ -58,19 +58,19 @@ public class Flight {
 		this.capacity = capacity;
 	}
 
-	public LocalTime getDepartureTime() {
+	public LocalDate getDepartureTime() {
 		return departureTime;
 	}
 
-	public void setDepartureTime(LocalTime departureTime) {
+	public void setDepartureTime(LocalDate departureTime) {
 		this.departureTime = departureTime;
 	}
 
-	public LocalTime getArrivalTime() {
+	public LocalDate getArrivalTime() {
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(LocalTime arrivalTime) {
+	public void setArrivalTime(LocalDate arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
 

@@ -2,12 +2,12 @@ package dto;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import dbcon.ConnectionDB;
 import object.Address;
 import object.Agent;
 import object.AirPortFactory;
@@ -22,6 +22,7 @@ import object.Pilot;
 import object.Reservation;
 import object.ReservationFactory;
 import object.Ticket;
+import java.sql.*; 
 
 public class DataSource {
 
@@ -43,13 +44,20 @@ public class DataSource {
 	}
 	
 	private void createAirline() {
-		Airline airline1 = new Airline("AL1", "AL1", "AL1", "history AL1");
-		this._airlines.add(airline1);
-		Airline airline2 = new Airline("AL2", "AL2", "AL2", "history AL2");
-		this._airlines.add(airline2);
-		Airline airline3 = new Airline("AL3", "AL3", "AL3", "history AL3");
-		this._airlines.add(airline3);
 		
+		//String id, String code, String name, String history
+		try {
+			Connection n = ConnectionDB.conn(); 
+			Statement stmt=n.createStatement();  
+			ResultSet rs=stmt.executeQuery("select * from airline limit 3");  
+			//ConnectionDB.close(n);
+			while(rs.next()) {  
+				String id = String.valueOf(rs.getInt(1));
+				this._airlines.add(new Airline(id , rs.getString(2), rs.getString(3), rs.getString(4)));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 		
 		this._airports = createAirport();		
 		int[][] idx = new int[3][2];
@@ -94,34 +102,72 @@ public class DataSource {
 	
 	private List<Airport> createAirport() {
 		List<Airport> airports = new ArrayList<Airport>();
-		
-		Airport airport = new Airport("A", "A1", "A1", new Address("01", "S1", "C1", "S1", "Z1") );	
-		airports.add(airport);	
-		
-		Airport airport1 = new Airport("B", "B1", "B1", new Address("02", "S2", "C2", "S2", "Z2") );
-		airports.add(airport1);
-		
-		Airport airport2 = new Airport("C", "C1", "C1", new Address("03", "S3", "C23", "S23", "Z3") );
-		airports.add(airport2);
+
+		try {
+
+			Connection n = ConnectionDB.conn(); 
+			Statement stmt=n.createStatement(); 
+			ResultSet ai=stmt.executeQuery("select a.id, a.code, a.name, ad.id, ad.street, ad.city, ad.state, ad.zip FROM airport a INNER JOIN address ad ON a.addressid=ad.id limit 3");  
+	
+			while(ai.next()) {  
+				String aiId = String.valueOf(ai.getInt(1));
+				String adId2 = String.valueOf(ai.getInt(4));
+				airports.add(new Airport(aiId, ai.getString(2), ai.getString(3), new Address(adId2, ai.getString(5), ai.getString(6), ai.getString(7), ai.getString(8))));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 		
 		return airports;
 	}
 	
 	private List<Flight> createFlights(List<Airport> airports) {
 		List<Flight> flights = new ArrayList<Flight>();
+		try {
+			Airport departureAirpot = null;
+			Airport arrivalAirpot = null;
+			Connection n = ConnectionDB.conn(); 
+			Statement stmt=n.createStatement(); 
+			ResultSet fl=stmt.executeQuery("select * FROM flight");
+			//ConnectionDB.close(n);
+			while(fl.next()) {  
+				String aiId = String.valueOf(fl.getInt(1));
+				int departureid = fl.getInt(6);
+				int arrivalid = fl.getInt(7);
+ 
+				Statement stmt2=n.createStatement(); 
+				ResultSet airp1=stmt2.executeQuery("select a.id, a.code, a.name, ad.id, ad.street, ad.city, ad.state, ad.zip FROM airport a INNER JOIN address ad ON a.addressid=ad.id  WHERE a.id = '"+departureid+"'");
+				
+
+				Statement stmt3=n.createStatement(); 
+				ResultSet airp2=stmt3.executeQuery("select a.id, a.code, a.name, ad.id, ad.street, ad.city, ad.state, ad.zip FROM airport a INNER JOIN address ad ON a.addressid=ad.id  WHERE a.id = '"+arrivalid+"'");  
+			
+				while(airp1.next()) {
+					String aiId1 = String.valueOf(airp1.getInt(1));
+					String adId2 = String.valueOf(airp1.getInt(4));
+					departureAirpot = new Airport(aiId1, airp1.getString(2), airp1.getString(3), new Address(adId2, airp1.getString(5), airp1.getString(6), airp1.getString(7), airp1.getString(8)));
+					}
+
+				while(airp2.next()) {
+					String aiId1 = String.valueOf(airp2.getInt(1));
+					String adId2 = String.valueOf(airp2.getInt(4));
+					arrivalAirpot = new Airport(aiId1, airp2.getString(2), airp2.getString(3), new Address(adId2, airp2.getString(5), airp2.getString(6), airp2.getString(7), airp2.getString(8)));
+					}
+				flights.add(new Flight(aiId, fl.getString(2), fl.getInt(3),  fl.getDate(4).toLocalDate(), fl.getDate(5).toLocalDate(), departureAirpot, arrivalAirpot));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 		
-		Flight f1 = new Flight("F1", "F1", 40, LocalTime.now(), LocalTime.now(), airports.get(0), airports.get(1));
-		flights.add(f1);		
-		
-		Flight f2 = new Flight("F2", "F2", 39, LocalTime.now(), LocalTime.now(), airports.get(1), airports.get(2));
-		flights.add(f2);
-		
+		System.out.println(flights);
 		return flights;
 	}
 	
 	private List<FlightInstance> createFlightInstaces(Flight flight1, Flight flight2) {
 		
 		List<FlightInstance> res = new ArrayList<FlightInstance>();		
+		
+
 		
 		FlightInstance f1 = new FlightInstance("FI1", flight1, LocalDate.now());
 		res.add(f1);
@@ -136,58 +182,64 @@ public class DataSource {
 	
 	private List<Pilot> createPilots() {		
 		List<Pilot> pilots = new ArrayList<Pilot>();
-		
-		Pilot pilot1 = new Pilot("P1", "P1", "P1", "p1@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		pilots.add(pilot1);
-		
-		Pilot pilot2 = new Pilot("P2", "P2", "P2", "p2@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		pilots.add(pilot2);
-		
-		Pilot pilot3 = new Pilot("P3", "P3", "P3", "p3@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		pilots.add(pilot3);
-		
-		Pilot pilot4 = new Pilot("P4", "P4", "P4", "p4@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		pilots.add(pilot4);
-		
-		
+		try {
+
+			Connection k = ConnectionDB.conn(); 
+			Statement stmt6=k.createStatement(); 
+			ResultSet p=stmt6.executeQuery("select p.id, p.firstName,p.lastName, p.email, p.dateOfbirth, ad.id, ad.street, ad.city, ad.state, ad.zip FROM person p INNER JOIN address ad  ON p.addressId = ad.id WHERE p.typeofperson = 'AGENT' limit 4");  
+
+			while(p.next()) {  
+				String aiId = String.valueOf(p.getInt(1));
+				String aiId2 = String.valueOf(p.getInt(6));
+				pilots.add(new Pilot(aiId, p.getString(2), p.getString(3), p.getString(4),  p.getDate(5).toLocalDate(), new Address(aiId2, p.getString(7), p.getString(8), p.getString(9), p.getString(10)), 56.41f));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+
 		return pilots;
 	}
 	
 	
 	private List<Crew> createCrews() {		
 		List<Crew> res = new ArrayList<Crew>();
-		
-		Crew o1 = new Crew("P1", "P1", "P1", "p1@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		res.add(o1);
-		
-		Crew o2 = new Crew("P2", "P2", "P2", "p2@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		res.add(o2);
-		
-		Crew o3 = new Crew("P3", "P3", "P3", "p3@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		res.add(o3);
-		
-		Crew o4 = new Crew("P4", "P4", "P4", "p4@gmail.com", LocalDate.now(), getRandomAdress(), 56.41f);
-		res.add(o4);
-		
+		try {
+
+			Connection k = ConnectionDB.conn(); 
+			Statement stmt6=k.createStatement(); 
+			ResultSet p=stmt6.executeQuery("select p.id, p.firstName,p.lastName, p.email, p.dateOfbirth, ad.id, ad.street, ad.city, ad.state, ad.zip FROM person p INNER JOIN address ad  ON p.addressId = ad.id WHERE p.typeofperson = 'AGENT' limit 4");  
+
+			while(p.next()) {  
+				String aiId = String.valueOf(p.getInt(1));
+				String aiId2 = String.valueOf(p.getInt(6));
+				res.add(new Crew(aiId, p.getString(2), p.getString(3), p.getString(4),  p.getDate(5).toLocalDate(), new Address(aiId2, p.getString(7), p.getString(8), p.getString(9), p.getString(10)), 56.41f));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+
 		return res;
 	}
 	
 	
 	private List<Agent> createAgents() {		
 		List<Agent> res = new ArrayList<Agent>();
-		
-		Agent o1 = new Agent("Agent1", "Agent1", "Agent1", "Agent1@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o1);
-		
-		Agent o2 = new Agent("Agent2", "Agent2", "Agent2", "Agent2@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o2);
-		
-		Agent o3 = new Agent("Agent3", "Agent3", "Agent3", "Agent3@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o3);
-		
-		Agent o4 = new Agent("Agent4", "PAgent4", "Agent4", "Agent4@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o4);
-		
+
+		try {
+
+			Connection k = ConnectionDB.conn(); 
+			Statement stmt6=k.createStatement(); 
+			ResultSet p=stmt6.executeQuery("select p.id, p.firstName,p.lastName, p.email, p.dateOfbirth, ad.id, ad.street, ad.city, ad.state, ad.zip FROM person p INNER JOIN address ad  ON p.addressId = ad.id WHERE p.typeofperson = 'AGENT' limit 4");  
+
+			while(p.next()) {  
+				String aiId = String.valueOf(p.getInt(1));
+				String aiId2 = String.valueOf(p.getInt(6));
+				res.add(new Agent(aiId, p.getString(2), p.getString(3), p.getString(4),  p.getDate(5).toLocalDate(), new Address(aiId2, p.getString(7), p.getString(8), p.getString(9), p.getString(10))));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+
 		return res;
 	}
 	
@@ -207,18 +259,21 @@ public class DataSource {
 	private List<Passenger> createPassengers() {		
 		List<Passenger> res = new ArrayList<Passenger>();
 		
-		Passenger o1 = new Passenger("Passenger1", "Pass1", "Pass1", "pass1@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o1);
-		
-		Passenger o2 = new Passenger("Passenger2", "Pass2", "Pass2", "pass2@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o2);
-		
-		Passenger o3 = new Passenger("Passenger3", "Pass3", "Pass3", "pass3@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o3);
-		
-		Passenger o4 = new Passenger("Passenger4", "Pass4", "Pass4", "pass4@gmail.com", LocalDate.now(), getRandomAdress());
-		res.add(o4);
-		
+		try {
+
+			Connection k = ConnectionDB.conn(); 
+			Statement stmt6=k.createStatement(); 
+			ResultSet p=stmt6.executeQuery("select p.id, p.firstName,p.lastName, p.email, p.dateOfbirth, ad.id, ad.street, ad.city, ad.state, ad.zip FROM person p INNER JOIN address ad  ON p.addressId = ad.id WHERE p.typeofperson = 'PASSENGER' limit 4");  
+
+			while(p.next()) {  
+				String aiId = String.valueOf(p.getInt(1));
+				String aiId2 = String.valueOf(p.getInt(6));
+				res.add(new Passenger(aiId, p.getString(2), p.getString(3), p.getString(4),  p.getDate(5).toLocalDate(), new Address(aiId2, p.getString(7), p.getString(8), p.getString(9), p.getString(10))));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
+
 		return res;
 	}
 	
