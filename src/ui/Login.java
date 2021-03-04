@@ -33,6 +33,7 @@ public class Login extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		
 		primaryStage.setTitle("Reservation System LOGIN");
 		
 		primaryStage.getIcons().add(new Image("/ui/icon.png"));
