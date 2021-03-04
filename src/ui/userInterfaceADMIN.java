@@ -62,13 +62,13 @@ public class userInterfaceADMIN extends Application {
 
 		
 /////////////////////////////////////
-		Button btShowAirPort = new Button("View List of Airports");
-		Button btViewlistairlines = new Button("View list of airlines by Airports");
-		Button btViewlistflights = new Button("View list of flights");
-		Button btmyreservations = new Button("View list of my reservations");
+		Button btShowAirPort = new Button("Airports");
+		Button btViewlistairlines = new Button("Airlines by Airports");
+		Button btViewlistflights = new Button("Flights");
+		Button btmyreservations = new Button("Reservations");
 		Button btMakeReservation = new Button("Make a reservation");
 		Button btCancelReservation = new Button("Cancel a Reservation");
-		Button btmypassenger = new Button("View list of my passengers ");
+		Button btmypassenger = new Button("Passengers ");
 		Button btConfirmeReservation = new Button("Confirm Reservation");
 
 		final ToggleGroup group = new ToggleGroup();
@@ -417,7 +417,7 @@ public class userInterfaceADMIN extends Application {
 		});
 
 //////////////////////////////////////////////////
-		stage.setScene(new Scene(bPane, 900,300));
+		stage.setScene(new Scene(bPane, 1000,300));
 		bPane.getStylesheets().add(getClass().getResource("Login.css").toExternalForm());
 		stage.show();
 

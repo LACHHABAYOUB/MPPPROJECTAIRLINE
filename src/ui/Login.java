@@ -1,6 +1,12 @@
 package ui;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
+
+import dbcon.ConnectionDB;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,6 +22,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import object.Address;
+import object.Agent;
 
 public class Login extends Application {
 
@@ -25,6 +33,7 @@ public class Login extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		
 		primaryStage.setTitle("Reservation System LOGIN");
 		
 		primaryStage.getIcons().add(new Image("/ui/icon.png"));
@@ -41,7 +50,7 @@ public class Login extends Application {
 		scenetitle.setId("welcome-text");
 		grid.add(scenetitle, 0, 0, 2, 1);
 
-		Label userName = new Label("User Name:");
+		Label userName = new Label("Email:");
 		grid.add(userName, 0, 1);
 
 		TextField userTextField = new TextField();
@@ -69,26 +78,45 @@ public class Login extends Application {
 			@Override
 			public void handle(ActionEvent e) {
 				HashMap<String, String> users = new HashMap<String, String>();
-				// keys and values (Username, Password)
-				users.put("admin", "admin");
-				users.put("passenger", "passenger");
-				users.put("agent", "agent");
 
-				String u = userTextField.getText();
+				String usermail = userTextField.getText();
+				String password = pwBox.getText();
+				String usertype = "";
+				try {
 
-				if (users.get(u) == null)
+					Connection k = ConnectionDB.conn(); 
+					Statement stmt6=k.createStatement(); 
+					ResultSet p=stmt6.executeQuery("select 	typeofperson FROM person WHERE email ='"+usermail+"' and password='"+password+"'");  
+
+					while(p.next()) {  
+						usertype = p.getString(1);
+						System.out.println(usertype);
+					}
+				}catch(SQLException r) {
+					System.out.println(r);
+				}
+
+				
+//				 keys and values (Username, Password)
+//				passanger: 	hannap_12@gmail.com    12
+//				agent:		ayoub_12@gmail.com	   12
+//				admin		alba_12@gmail.com	   12
+
+				if (usertype.equals(""))
 					actiontarget.setText("Invalid Input!");
-				else if (users.get(u).equals("admin")) {
+				else if (usertype.equals("ADMIN")) {
 					new userInterfaceADMIN().start(new Stage());
 					primaryStage.close();
-				} else if (users.get(u).equals("passenger")) {
+				} else if (usertype.equals("PASSENGER")) {
 					new userInterfacePASSENGER().start(new Stage());
 					primaryStage.close();
-				} else if (users.get(u).equals("agent")) {
+				} else if (usertype.equals("AGENT")) {
 					new userInterfaceAGENT().start(new Stage());
 					primaryStage.close();
 				}
 				actiontarget.setText("Invalid Input!");
+				
+				
 			}
 		});
 
