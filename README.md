@@ -64,7 +64,9 @@ https://www.eclipse.org/downloads
 4 Project Team 
 
 Ayoub Lachhab 
+
 Hannah Gail Ruba Fajutag 
+
 Alba Elizabeth Padilla Pacheco
 
 5 Demonstration of the application
