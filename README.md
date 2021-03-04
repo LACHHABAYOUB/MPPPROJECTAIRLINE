@@ -18,15 +18,15 @@ These instructions will get you a copy of the project up and running on your loc
 2 Prerequisites
 
 ```sh
-3.1 XAMPP OR wamp server 
+2.1 XAMPP OR wamp server 
 
 I suggest Xampp you can Download from this link : 
 https://www.apachefriends.org/download.html
 
-Java JDK
+2.2 Java JDK
 https://www.oracle.com/java/technologies/javase-downloads.html
 
-IDE i suggest Eclipse 
+2.3 Integrated development environment I suggest Eclipse 
 
 https://www.eclipse.org/downloads
 
@@ -37,18 +37,18 @@ https://www.eclipse.org/downloads
 
 
 
-Install the required Prerequisites
+3.1 Install the required Prerequisites
 ```sh
 - Import Project 
 - Import some addtional library there located on :
     /src/Additional/Library To Add
     
 ```
-For Run the project should go to UI/login.java and go to Run Configuration add this on argument 
+3.2 For Run the project should go to UI/login.java and go to Run Configuration add this on argument 
 ```sh
 --module-path " LOCATION OF LIB OF JAVAFX " --add-modules javafx.controls,javafx.fxml
 ```
-Some Account For Testing.
+3.3 Some Account For Testing.
 
 ```sh
 
@@ -57,7 +57,7 @@ Some Account For Testing.
 //				admin      => Email : alba_12@gmail.com	    Passwrod : 12
 ```
 
-4 Author
+4 Project Team 
 
 Ayoub Lachhab 
 Hannah Gail Ruba Fajutag 
